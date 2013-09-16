@@ -1,0 +1,34 @@
+﻿<Window x:Class="SpriteMapGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="720" Width="1280" ResizeMode="NoResize">
+    <Grid>
+        <Canvas Height="652" HorizontalAlignment="Left" Margin="219,29,0,0" Name="canvasSpriteSheet" VerticalAlignment="Top" Width="1039" AllowDrop="True">
+            <Canvas.Background>
+                <ImageBrush ImageSource="/SpriteMapGenerator;component/Images/BG.png" Stretch="None" TileMode="Tile" Viewport="0,0,42.6613324088793,42.6613324088793" ViewportUnits="Absolute" />
+            </Canvas.Background>
+        </Canvas>
+        <ListView Height="445" HorizontalAlignment="Left" Name="listView1" VerticalAlignment="Top" Width="213" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True" RenderOptions.ClearTypeHint="Auto" />
+            </ListView.View>
+        </ListView>
+        <Menu Height="23" Name="menu1" VerticalAlignment="Center" Margin="0,0,-13,658">
+            <MenuItem Header="File">
+                <MenuItem Header="Load" MouseUp="Menu_Load_MouseUp"/>
+                <MenuItem Header="Save" MouseUp="Menu_Save_MouseUp"/>
+                <Separator />
+                <MenuItem Header="Exit" MouseUp="Menu_Exit_MouseUp"/>
+            </MenuItem>
+            <MenuItem Header="Export">
+                <MenuItem Header="XML"   MouseUp="Menu_XML_MouseUp"/>
+                <MenuItem Header="pList" MouseUp="Menu_pList_MouseUp"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" />
+                <MenuItem Header="Version" />
+            </MenuItem>
+        </Menu>
+        <Image Height="201" HorizontalAlignment="Left" Margin="0,480,0,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Width="213" />
+    </Grid>
+</Window>
