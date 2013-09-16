@@ -20,10 +20,12 @@ namespace SpriteMapGenerator
     /// </summary>
     public partial class MainWindow : Window
     {
+        public double offx = 0;
+        List<ListViewItem> ListViewItems = new List<ListViewItem>();
         public class ListViewItem
         {
-            public string sName { get; set; }
-            public string sPath { get; set; }
+            public string sName     { get; set; }
+            public string sPath     { get; set; }
             public Image imgImage   { get; set; }
             public ListViewItem(string s_Name,string s_Path, Image img_Image)
             {
@@ -32,11 +34,12 @@ namespace SpriteMapGenerator
                 imgImage = img_Image;
             }
         }   
+        //Main
         public MainWindow()
         {
             InitializeComponent();
         }
-
+        //Menu
         private void Menu_Load_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofFile = new OpenFileDialog();
@@ -59,26 +62,22 @@ namespace SpriteMapGenerator
                     img.Source = bmimg;
                     img.Width = bmimg.Width;
                     img.Height = bmimg.Height;
+                    img.SetValue(Canvas.LeftProperty, offx);
                     img.EndInit();
 
+                    offx += img.Width;
                     String imagename = ofFile.SafeFileNames[i].Substring(0, ofFile.SafeFileNames[i].Length - System.IO.Path.GetExtension(file).Length);
 
                     ListViewItem item = new ListViewItem(imagename, ofFile.SafeFileNames[i], img);
                     LV_Sprites.Items.Add(item);
-
                     canvasSpriteSheet.Children.Add(img);
                     i++;
                 }
             }
-
-        }
-        private void Menu_Save_Click(object sender, RoutedEventArgs e)
-        {
-
         }
         private void Menu_Exit_Click(object sender, RoutedEventArgs e)
         {
-
+            Application.Current.Shutdown();
         }
         private void Menu_XML_Click(object sender, RoutedEventArgs e)
         {
@@ -88,5 +87,36 @@ namespace SpriteMapGenerator
         {
 
         }
+
+        private void LV_Sprites_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Point MousePos = e.GetPosition(this);
+            var hitTestResult = VisualTreeHelper.HitTest(this, MousePos);
+            MessageBox.Show(hitTestResult.VisualHit.GetType().ToString());
+            ListViewItem vClicked = null;
+            //TODO
+            if (LV_Sprites.Items.CurrentItem != null)
+            {
+                vClicked = LV_Sprites.Items.CurrentItem as ListViewItem;
+            }
+            if (vClicked != null)
+            {
+                Image img = new Image();
+                img.BeginInit();
+                img.Source = vClicked.imgImage.Source;
+                img.Width = vClicked.imgImage.Width;
+                img.Height = vClicked.imgImage.Height;
+                img.SetValue(Canvas.LeftProperty, 0.0);
+                img.SetValue(Canvas.TopProperty, img.Height);
+                img.EndInit();
+                canvasSpriteSheet.Children.Add(img);
+            }
+        }
+        private void canvasSpriteSheet_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Point pt = e.GetPosition(this);
+            VisualTreeHelper.HitTest(this,pt);
+        }
+
     }
 }

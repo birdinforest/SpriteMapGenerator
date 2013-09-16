@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="720" Width="1280" ResizeMode="NoResize">
     <Grid>
-        <Canvas Height="652" HorizontalAlignment="Left" Margin="219,29,0,0" Name="canvasSpriteSheet" VerticalAlignment="Top" Width="1039" AllowDrop="True">
+        <Canvas Height="652" HorizontalAlignment="Right" Margin="0,29,12,0" Name="canvasSpriteSheet" VerticalAlignment="Top" Width="1039" AllowDrop="True" MouseLeftButtonDown="canvasSpriteSheet_MouseLeftButtonDown">
             <Canvas.Background>
                 <ImageBrush ImageSource="/SpriteMapGenerator;component/Images/BG.png" Stretch="None" TileMode="Tile" Viewport="0,0,42.6613324088793,42.6613324088793" ViewportUnits="Absolute" />
             </Canvas.Background>
         </Canvas>
-        <ListView Height="445" HorizontalAlignment="Left" Name="LV_Sprites" VerticalAlignment="Top" Width="213" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single">
+        <ListView Height="652" HorizontalAlignment="Left" Name="LV_Sprites" VerticalAlignment="Top" Width="213" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single" PreviewMouseLeftButtonUp="LV_Sprites_PreviewMouseLeftButtonUp">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="File" DisplayMemberBinding="{Binding Path=sName}" Width="100"/>
@@ -19,7 +19,6 @@
         <Menu Height="23" Name="menu1" VerticalAlignment="Center" Margin="0,0,-13,658">
             <MenuItem Header="File">
                 <MenuItem Header="Load" Click="Menu_Load_Click"/>
-                <MenuItem Header="Save" Click="Menu_Save_Click"/>
                 <Separator />
                 <MenuItem Header="Exit" Click="Menu_Exit_Click"/>
             </MenuItem>
@@ -32,6 +31,5 @@
                 <MenuItem Header="Version" />
             </MenuItem>
         </Menu>
-        <Image Height="201" HorizontalAlignment="Left" Margin="0,480,0,0" Name="Img_Preview" Stretch="Fill" VerticalAlignment="Top" Width="213" />
     </Grid>
 </Window>
