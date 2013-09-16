@@ -8,27 +8,30 @@
                 <ImageBrush ImageSource="/SpriteMapGenerator;component/Images/BG.png" Stretch="None" TileMode="Tile" Viewport="0,0,42.6613324088793,42.6613324088793" ViewportUnits="Absolute" />
             </Canvas.Background>
         </Canvas>
-        <ListView Height="445" HorizontalAlignment="Left" Name="listView1" VerticalAlignment="Top" Width="213" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single">
+        <ListView Height="445" HorizontalAlignment="Left" Name="LV_Sprites" VerticalAlignment="Top" Width="213" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single">
             <ListView.View>
-                <GridView AllowsColumnReorder="True" RenderOptions.ClearTypeHint="Auto" />
+                <GridView>
+                    <GridViewColumn Header="File" DisplayMemberBinding="{Binding Path=sName}" Width="100"/>
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=sPath}" Width="110"/>
+                </GridView>
             </ListView.View>
         </ListView>
         <Menu Height="23" Name="menu1" VerticalAlignment="Center" Margin="0,0,-13,658">
             <MenuItem Header="File">
-                <MenuItem Header="Load" MouseUp="Menu_Load_MouseUp"/>
-                <MenuItem Header="Save" MouseUp="Menu_Save_MouseUp"/>
+                <MenuItem Header="Load" Click="Menu_Load_Click"/>
+                <MenuItem Header="Save" Click="Menu_Save_Click"/>
                 <Separator />
-                <MenuItem Header="Exit" MouseUp="Menu_Exit_MouseUp"/>
+                <MenuItem Header="Exit" Click="Menu_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Export">
-                <MenuItem Header="XML"   MouseUp="Menu_XML_MouseUp"/>
-                <MenuItem Header="pList" MouseUp="Menu_pList_MouseUp"/>
+                <MenuItem Header="XML"   Click="Menu_XML_Click"/>
+                <MenuItem Header="pList" Click="Menu_pList_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" />
                 <MenuItem Header="Version" />
             </MenuItem>
         </Menu>
-        <Image Height="201" HorizontalAlignment="Left" Margin="0,480,0,0" Name="image1" Stretch="Fill" VerticalAlignment="Top" Width="213" />
+        <Image Height="201" HorizontalAlignment="Left" Margin="0,480,0,0" Name="Img_Preview" Stretch="Fill" VerticalAlignment="Top" Width="213" />
     </Grid>
 </Window>
