@@ -21,10 +21,13 @@ namespace SpriteMapGenerator
     public partial class MainWindow : Window
     {
         public double offx = 0,offy = 0;
-        public int TileSizeX = 0,TileSizeY = 0;
         bool bPressed = false;
+        int SnapValX = 8;
+        int SnapValY = 8;
         Point MousePoint;
         Image CurrentImage = null;
+        Window1 winSettings = null;
+        Point Snap;
         public class ListViewItem
         {
             public string sName     { get; set; }
@@ -42,6 +45,9 @@ namespace SpriteMapGenerator
         {
             InitializeComponent();
             CheckSize();
+            Snap = new Point();
+            Label_SnapValX.Content = SnapValX;
+            Label_SnapValY.Content = SnapValY;
         }
         //Menu
         private void Menu_Load_Click(object sender, RoutedEventArgs e)
@@ -77,7 +83,7 @@ namespace SpriteMapGenerator
                     img.EndInit();
                     //Update the OffX/OffY
                     offx += img.Width;
-                    offy = 0;
+                    offy = img.Height;
                     CheckSize();
                     //Setup the ShortName
                     String imagename = ofFile.SafeFileNames[i].Substring(0, ofFile.SafeFileNames[i].Length - System.IO.Path.GetExtension(file).Length);
@@ -95,6 +101,11 @@ namespace SpriteMapGenerator
         private void Menu_Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+        private void Menu_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            winSettings = new Window1();
+            winSettings.Show();
         }
         private void Menu_XML_Click(object sender, RoutedEventArgs e)
         {
@@ -176,10 +187,8 @@ namespace SpriteMapGenerator
         {
             if (CurrentImage != null)
             {
-                int SnapVal = 0;
-                Point Snap = new Point();
-                Snap.X = (e.MouseDevice.GetPosition(canvasSpriteSheet).X - CurrentImage.Width * 0.5);
-                Snap.Y = (e.MouseDevice.GetPosition(canvasSpriteSheet).Y - CurrentImage.Height * 0.5);
+                Snap.X = (int)(e.MouseDevice.GetPosition(canvasSpriteSheet).X - CurrentImage.Width * 0.5)  / SnapValX * SnapValX;
+                Snap.Y = (int)(e.MouseDevice.GetPosition(canvasSpriteSheet).Y - CurrentImage.Height * 0.5) / SnapValY * SnapValY;
                 CurrentImage.SetValue(Canvas.LeftProperty, Snap.X);
                 CurrentImage.SetValue(Canvas.TopProperty, Snap.Y);
             }
@@ -188,19 +197,17 @@ namespace SpriteMapGenerator
         private void CheckSize()
         {
             //Width
-            if (offx > TileSizeX)
+            if (offx > canvasSpriteSheet.Width)
             {
-                TileSizeX = Power(offx);
-                canvasSpriteSheet.Width = TileSizeX;
+                canvasSpriteSheet.Width = Power(offx);
+                Label_ImageWidth.Content = canvasSpriteSheet.Width;
             }
-            Label_ImageWidth.Content = canvasSpriteSheet.Width;
             //Height
-            if (offy > TileSizeY)
+            if (offy > canvasSpriteSheet.Height)
             {
-                TileSizeY = Power(offy) ;
-                canvasSpriteSheet.Height = TileSizeY;
+                canvasSpriteSheet.Height = Power(offy);
+                Label_ImageHeight.Content = canvasSpriteSheet.Height;
             }
-            Label_ImageHeight.Content = canvasSpriteSheet.Height;
         }
         private int Power(double value)
         {
@@ -214,8 +221,6 @@ namespace SpriteMapGenerator
         //BoxChecking
         private bool CheckInside(Point Value, Image img)
         {
-            //Console.WriteLine(string.Format("X : {0} {1} {2}", (double)img.GetValue(Canvas.LeftProperty), Value.X, (double)img.GetValue(Canvas.LeftProperty) + img.Width));
-            //Console.WriteLine(string.Format("Y : {0} {1} {2}", (double)img.GetValue(Canvas.TopProperty), Value.Y, (double)img.GetValue(Canvas.TopProperty) + img.Height));
             if (Value.X < (double)img.GetValue(Canvas.LeftProperty) + img.Width &&
                 Value.X > (double)img.GetValue(Canvas.LeftProperty) &&
                 Value.Y < (double)img.GetValue(Canvas.TopProperty) + img.Height &&
