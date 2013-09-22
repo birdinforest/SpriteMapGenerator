@@ -1,0 +1,16 @@
+﻿<Window x:Class="SpriteMapGenerator.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SettingsWindow" Height="200" Width="300" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,56,0,0" Name="tb_XVal" VerticalAlignment="Top" Width="100" TextChanged="tb_XVal_TextChanged" />
+        <TextBox Height="23" HorizontalAlignment="Right" Margin="0,56,12,0" Name="tb_YVal" VerticalAlignment="Top" Width="100" TextChanged="tb_YVal_TextChanged" FlowDirection="RightToLeft" />
+        <CheckBox Content="Snap To X" Height="16" HorizontalAlignment="Left" Margin="12,34,0,0" Name="cb_XVal" VerticalAlignment="Top" Width="100" IsChecked="True" Click="cb_XVal_Click" />
+        <CheckBox Content="Snap To Y" Height="16" HorizontalAlignment="Right" Margin="0,34,12,0" Name="cb_YVal" VerticalAlignment="Top" Width="100" IsChecked="True" HorizontalContentAlignment="Left" FlowDirection="RightToLeft" Click="cb_YVal_Click" />
+        <Label Content="Snap To Grid" Height="28" HorizontalAlignment="Center" Margin="0,5,0,0" Name="label3" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,112,0,0" Name="tb_MaxWidth" VerticalAlignment="Top" Width="100" TextChanged="tb_MaxWidth_TextChanged" />
+        <Label Content="Max Width" Height="28" HorizontalAlignment="Left" Margin="12,86,0,0" Name="l_MaxWidth" VerticalAlignment="Top" />
+        <TextBox FlowDirection="RightToLeft" Height="23" HorizontalAlignment="Right" Margin="0,112,12,0" Name="tb_MaxHeight" VerticalAlignment="Top" Width="100" TextChanged="tb_MaxHeight_TextChanged" />
+        <Label Content="Max Height" Height="28" HorizontalAlignment="Left" Margin="195,86,0,0" Name="l_MaxHeight" VerticalAlignment="Top" FlowDirection="RightToLeft" />
+    </Grid>
+</Window>

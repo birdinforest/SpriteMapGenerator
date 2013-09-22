@@ -14,20 +14,20 @@
         <Menu Height="23" Name="menu1" VerticalAlignment="Top" Margin="0,0,0,0">
             <MenuItem Header="File">
                 <MenuItem Header="Load" Click="Menu_Load_Click"/>
+                <MenuItem Header="New" Click="Menu_New_Click"/>
                 <Separator />
                 <MenuItem Header="Setttings" Click="Menu_Settings_Click"/>
                 <MenuItem Header="Exit" Click="Menu_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Export">
                 <MenuItem Header="XML"   Click="Menu_XML_Click"/>
-                <MenuItem Header="pList" Click="Menu_pList_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" />
                 <MenuItem Header="Version" />
             </MenuItem>
         </Menu>
-        <ListView Height="652" HorizontalAlignment="Right" Margin="0,29,0,0" Name="LV_Layers" VerticalAlignment="Center" Width="200" Background="White">
+        <ListView Height="652" HorizontalAlignment="Right" Margin="0,29,0,0" Name="LV_Layers" VerticalAlignment="Center" Width="200" Background="White" AllowDrop="True" Drop="LV_Layers_Drop" MouseLeftButtonUp="LV_Layers_MouseLeftButtonUp">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Sprite" DisplayMemberBinding="{Binding Path=imgImage}" Width="50"/>
@@ -36,7 +36,7 @@
             </ListView.View>
         </ListView>
         <Canvas Name="CanvasViewport" Width="856" Height="652" ClipToBounds="True" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="0,29,0,0" Background="#CDFFFFFF" MouseMove="CanvasViewport_MouseMove" MouseRightButtonDown="CanvasViewport_MouseRightButtonDown" MouseRightButtonUp="CanvasViewport_MouseRightButtonUp">
-            <Canvas Name="canvasSpriteSheet" Width="0" Height="0" AllowDrop="True" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="172,70,0,0" MouseLeftButtonDown="canvasSpriteSheet_MouseLeftButtonDown" MouseMove="canvasSpriteSheet_MouseMove" MouseLeftButtonUp="canvasSpriteSheet_MouseLeftButtonUp">
+            <Canvas Name="canvasSpriteSheet" Width="512" Height="512" AllowDrop="True" ClipToBounds="True" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="172,70,0,0" MouseLeftButtonDown="canvasSpriteSheet_MouseLeftButtonDown" MouseMove="canvasSpriteSheet_MouseMove" MouseLeftButtonUp="canvasSpriteSheet_MouseLeftButtonUp">
                 <Canvas.Background>
                     <ImageBrush ImageSource="/SpriteMapGenerator;component/Images/BG.png" Stretch="None" TileMode="Tile" Viewport="0,0,21.3306662044397,21.3306662044397" ViewportUnits="Absolute" />
                 </Canvas.Background>
@@ -46,8 +46,8 @@
             <Label Content="0" Height="28" Name="Label_SnapValX" Margin="0,610,0,0"  FontWeight="Bold" />
             <Label Content="0" Height="28" Name="Label_SnapValY" Margin="0,626,0,0" FontWeight="Bold"/>
         </Canvas>
-        <Border BorderBrush="Black"  BorderThickness="2" Height="652" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,29,0,0"/>
-        <Border BorderBrush="Black"  BorderThickness="2" Height="652" Width="856" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,29,0,0"/>
-        <Border BorderBrush="Black"  BorderThickness="2" Height="652" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,29,0,0"/>
+        <Border BorderBrush="Green"  BorderThickness="2" Height="652" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,29,0,0"/>
+        <Border BorderBrush="Green"  BorderThickness="2" Height="652" Width="856" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,29,0,0"/>
+        <Border BorderBrush="Green"  BorderThickness="2" Height="652" Width="200" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,30,0,0"/>
     </Grid>
 </Window>
