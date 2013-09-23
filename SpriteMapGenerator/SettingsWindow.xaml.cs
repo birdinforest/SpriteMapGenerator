@@ -22,13 +22,12 @@ namespace SpriteMapGenerator
         public int ixVal, iyVal;
         public bool bSnapX, bSnapY;
         public double dMaxWidth, dMaxHeight;
-        public double dWidth, dHeight;
+        public double dXOff, dYOff;
         MainWindow MainWin;
 
         public SettingsWindow()
         {
             InitializeComponent();
-
             MainWin = Application.Current.Windows[0] as MainWindow;
         }
         public SettingsWindow(int x, int y, bool xx, bool yy,double MaxW, double MaxH,double W,double H)
@@ -44,8 +43,8 @@ namespace SpriteMapGenerator
             dMaxWidth = MaxW; tb_MaxWidth.Text = MaxW.ToString();
             dMaxHeight = MaxH; tb_MaxHeight.Text = MaxH.ToString();
 
-            dWidth = W; tb_MaxHeight.Text = W.ToString();
-            dHeight = H; tb_MaxHeight.Text = H.ToString();
+            dXOff = W; tb_MaxHeight.Text = W.ToString();
+            dYOff = H; tb_MaxHeight.Text = H.ToString();
 
             MainWin = Application.Current.Windows[0] as MainWindow;
         }
@@ -135,10 +134,10 @@ namespace SpriteMapGenerator
             {
                 if (IsTextAllowed(Str))
                 {
-                    dHeight = double.Parse(Str);
+                    dYOff = double.Parse(Str);
                     if (MainWin != null)
                     {
-                        MainWin.SetHeight = dHeight;
+                        MainWin.SetHeight = dYOff;
                     }
                 }
             }
@@ -151,10 +150,10 @@ namespace SpriteMapGenerator
             {
                 if (IsTextAllowed(Str))
                 {
-                    dWidth = double.Parse(Str);
+                    dXOff = double.Parse(Str);
                     if (MainWin != null)
                     {
-                        MainWin.SetWidth = dWidth;
+                        MainWin.SetWidth = dXOff;
                     }
                 }
             }
