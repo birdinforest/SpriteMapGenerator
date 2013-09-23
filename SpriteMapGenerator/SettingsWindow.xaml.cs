@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace SpriteMapGenerator
 {
@@ -21,6 +22,7 @@ namespace SpriteMapGenerator
         public int ixVal, iyVal;
         public bool bSnapX, bSnapY;
         public double dMaxWidth, dMaxHeight;
+        public double dWidth, dHeight;
         MainWindow MainWin;
 
         public SettingsWindow()
@@ -29,7 +31,7 @@ namespace SpriteMapGenerator
 
             MainWin = Application.Current.Windows[0] as MainWindow;
         }
-        public SettingsWindow(int x, int y, bool xx, bool yy,double MaxW, double MaxH)
+        public SettingsWindow(int x, int y, bool xx, bool yy,double MaxW, double MaxH,double W,double H)
         {
             InitializeComponent();
 
@@ -41,6 +43,9 @@ namespace SpriteMapGenerator
 
             dMaxWidth = MaxW; tb_MaxWidth.Text = MaxW.ToString();
             dMaxHeight = MaxH; tb_MaxHeight.Text = MaxH.ToString();
+
+            dWidth = W; tb_MaxHeight.Text = W.ToString();
+            dHeight = H; tb_MaxHeight.Text = H.ToString();
 
             MainWin = Application.Current.Windows[0] as MainWindow;
         }
@@ -56,7 +61,6 @@ namespace SpriteMapGenerator
         private void cb_YVal_Click(object sender, RoutedEventArgs e)
         {
             bSnapY = (bool)cb_YVal.IsChecked;
-            
             if (MainWin != null)
             {
                 MainWin.SetSnapY = bSnapY;
@@ -64,37 +68,101 @@ namespace SpriteMapGenerator
         }
         private void tb_XVal_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ixVal = int.Parse(tb_XVal.Text.ToString());
-            if (MainWin != null)
+            string Str = tb_XVal.Text.ToString();
+            if (Str.Length > 0)
             {
-                MainWin.SetSnapValX = ixVal;
+                if (IsTextAllowed(Str))
+                {
+                    ixVal = int.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetSnapValX = ixVal;
+                    }
+                }
             }
         }
         private void tb_YVal_TextChanged(object sender, TextChangedEventArgs e)
         {
-            iyVal = int.Parse(tb_YVal.Text.ToString());
-            if (MainWin != null)
+            string Str = tb_YVal.Text.ToString();
+            if (Str.Length > 0)
             {
-                MainWin.SetSnapValY = iyVal;
+                if (IsTextAllowed(Str))
+                {
+                    iyVal = int.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetSnapValY = iyVal;
+                    }
+                }
             }
         }
 
         private void tb_MaxHeight_TextChanged(object sender, TextChangedEventArgs e)
         {
-            dMaxHeight = double.Parse(tb_MaxHeight.Text.ToString());
-            if (MainWin != null)
+            string Str = tb_MaxHeight.Text.ToString();
+            if (Str.Length > 0)
             {
-                MainWin.SetMaxHeight = dMaxHeight;
+                if (IsTextAllowed(Str))
+                {
+                    dMaxHeight = double.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetMaxHeight = dMaxHeight;
+                    }
+                }
             }
         }
 
         private void tb_MaxWidth_TextChanged(object sender, TextChangedEventArgs e)
         {
-            dMaxWidth = double.Parse(tb_MaxWidth.Text.ToString());
-            if (MainWin != null)
+            string Str = tb_MaxWidth.Text.ToString();
+            if (Str.Length > 0)
             {
-                MainWin.SetMaxWidth = dMaxWidth;
+                if (IsTextAllowed(Str))
+                {
+                    dMaxWidth = double.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetMaxWidth = dMaxWidth;
+                    }
+                }
             }
+        }
+        private void tb_Height_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string Str = tb_Height.Text.ToString();
+            if (Str.Length > 0)
+            {
+                if (IsTextAllowed(Str))
+                {
+                    dHeight = double.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetHeight = dHeight;
+                    }
+                }
+            }
+        }
+
+        private void tb_Width_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string Str = tb_Width.Text.ToString();
+            if (Str.Length > 0)
+            {
+                if (IsTextAllowed(Str))
+                {
+                    dWidth = double.Parse(Str);
+                    if (MainWin != null)
+                    {
+                        MainWin.SetWidth = dWidth;
+                    }
+                }
+            }
+        }
+        private static bool IsTextAllowed(string text)
+        {
+            Regex regex = new Regex("[^0-9.-]+");
+            return !regex.IsMatch(text);
         }
     }
 }

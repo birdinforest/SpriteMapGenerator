@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +34,7 @@ namespace SpriteMapGenerator
     public partial class MainWindow : Window
     {
 
-        private double offx = 0,offy = 0;
+        private double dWidth = 0,dHeight = 0;
         private bool bPressed = false;
 
         private int SnapValX = 0;           public int SetSnapValX  { set { SnapValX = value; Label_SnapValX.Content = SnapValX; } }
@@ -41,7 +42,10 @@ namespace SpriteMapGenerator
         private bool SnapX = false;         public  bool SetSnapX   { set { SnapX    = value; } }
         private bool SnapY = false;         public bool SetSnapY { set { SnapY = value; } }
         private double MaxWidth = 1024.0;   public double SetMaxWidth { set { MaxWidth = value; } }
-        private double MaxHeight = 1024.0;  public double SetMaxHeight { set { MaxHeight = value; } }
+        private double MaxHeight = 1024.0; public double SetMaxHeight { set { MaxHeight = value; } }
+
+        public double SetWidth { set { dWidth = value; } }
+        public double SetHeight { set { dHeight = value; } }
 
         private Point MousePoint;
         private Image CurrentImage = null;
@@ -51,7 +55,7 @@ namespace SpriteMapGenerator
         public MainWindow()
         {
             InitializeComponent();
-            CheckSize(0.0, 0.0);
+            CheckSize(MaxWidth,MaxHeight);
             Snap = new Point();
             Label_SnapValX.Content = SnapValX;
             Label_SnapValY.Content = SnapValY;
@@ -86,12 +90,12 @@ namespace SpriteMapGenerator
                     img.Source = bmimg;
                     img.Width = bmimg.PixelWidth;
                     img.Height = bmimg.PixelHeight;
-                    img.SetValue(Canvas.LeftProperty, offx);
-                    img.SetValue(Canvas.TopProperty, offy);
+                    img.SetValue(Canvas.LeftProperty, dWidth);
+                    img.SetValue(Canvas.TopProperty, dHeight);
                     img.EndInit();
 
-                    //Update the OffX/OffY
-                    CheckSize(img.Width, img.Height);
+                    //Update the dWidth/dHeight
+                    CheckSize(img.Width,img.Height);
                     //Setup the ShortName
                     String imagename = ofFile.SafeFileNames[i].Substring(0, ofFile.SafeFileNames[i].Length - System.IO.Path.GetExtension(file).Length);
                     //Create the ListViewItem
@@ -121,13 +125,32 @@ namespace SpriteMapGenerator
         }
         private void Menu_Settings_Click(object sender, RoutedEventArgs e)
         {
-            SettingsWindowV = new SettingsWindow(SnapValX,SnapValY,SnapX,SnapY,MaxWidth,MaxHeight);
+            SettingsWindowV = new SettingsWindow(SnapValX,SnapValY,SnapX,SnapY,MaxWidth,MaxHeight,dWidth,dHeight);
             SettingsWindowV.Show();
         }
         private void Menu_XML_Click(object sender, RoutedEventArgs e)
         {
             //Export the Canvas to XML
+
             //Export the Canvas to PNG
+            canvasSpriteSheet.Background.Opacity = 0d;
+            RenderTargetBitmap RTB_Image = new RenderTargetBitmap((int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight, 96d, 96d, PixelFormats.Pbgra32);
+            canvasSpriteSheet.Measure(new Size((int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight));
+            canvasSpriteSheet.Arrange(new Rect(0,0,(int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight));
+            //canvasSpriteSheet.
+            RTB_Image.Render(canvasSpriteSheet);
+            PngBitmapEncoder PNG_Image = new PngBitmapEncoder();
+            PNG_Image.Frames.Add(BitmapFrame.Create(RTB_Image));
+            SaveFileDialog SFD_Export = new SaveFileDialog();
+            SFD_Export.Filter = "PNG Image | *.png";
+            Nullable<bool> ofFileResult = SFD_Export.ShowDialog();
+            //Check we clicked ok.
+            if (ofFileResult == true){
+                FileStream FS_File = File.Create(SFD_Export.FileName);
+                PNG_Image.Save(FS_File);
+                FS_File.Close();
+            }
+            canvasSpriteSheet.Background.Opacity = 1d;
         }
         //check what image we are pressing
         private void LV_Sprites_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -236,28 +259,30 @@ namespace SpriteMapGenerator
             Label_ImageWidth.Content = canvasSpriteSheet.Width;
             canvasSpriteSheet.Height = 0.0;
             Label_ImageHeight.Content = canvasSpriteSheet.Height;
-            offx = 0.0;
-            offy = 0.0;
+            dWidth = 0.0;
+            dHeight = 0.0;
         }
         private void CheckSize(double Width, double Height)
         {
             //Replace this with AutoTiling
-            offx += Width;
-            if (offx >= MaxWidth && offy < MaxHeight)
+            dWidth += Width;
+            if (dWidth >= MaxWidth && dHeight < MaxHeight)
             {
-                offx = 0.0;
-                offy += Height;
+                dWidth = 0.0;
+                dHeight += Height;
             }
             //Width
-            if (offx > canvasSpriteSheet.Width)
+            if (dWidth != canvasSpriteSheet.Width)
             {
-                canvasSpriteSheet.Width = Power(offx);
+                canvasSpriteSheet.Width = Power(dWidth);
+                dWidth = canvasSpriteSheet.Width;
                 Label_ImageWidth.Content = canvasSpriteSheet.Width;
             }
             //Height
-            if (offy > canvasSpriteSheet.Height)
+            if (dHeight != canvasSpriteSheet.Height)
             {
-                canvasSpriteSheet.Height = Power(offy);
+                canvasSpriteSheet.Height = Power(dHeight);
+                dHeight = canvasSpriteSheet.Height;
                 Label_ImageHeight.Content = canvasSpriteSheet.Height;
             }
         }
