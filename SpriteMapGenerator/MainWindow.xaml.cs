@@ -137,24 +137,39 @@ namespace SpriteMapGenerator
             SettingsWindowV = new SettingsWindow(SnapValX, SnapValY, SnapX, SnapY, dMaxWidth, dMaxHeight, canvasSpriteSheet.Width, canvasSpriteSheet.Height);
             SettingsWindowV.Show();
         }
-        private void Menu_XML_Click(object sender, RoutedEventArgs e)
+        private void Menu_XMLPos_Click(object sender, RoutedEventArgs e)
         {
-            //Check if we can export
-            if (canvasSpriteSheet.ActualHeight == 0){
-                MessageBox.Show("Export Failed. Canvas has a Height of 0.", "Export Failure.");
-            }
-            if (canvasSpriteSheet.ActualWidth == 0)
+            if (!CanvasCheck()) return;
+            //Export the Canvas to PNG
+            canvasSpriteSheet.Background.Opacity = 0d;
+            //Create RenderTarget for the image
+            RenderTargetBitmap RTB_Image = new RenderTargetBitmap((int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight, 96d, 96d, PixelFormats.Pbgra32);
+            canvasSpriteSheet.Measure(new Size((int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight));
+            canvasSpriteSheet.Arrange(new Rect(0, 0, (int)canvasSpriteSheet.ActualWidth, (int)canvasSpriteSheet.ActualHeight));
+            RTB_Image.Render(canvasSpriteSheet);
+            //Create the PNG from the RenderTarget
+            PngBitmapEncoder PNG_Image = new PngBitmapEncoder();
+            PNG_Image.Frames.Add(BitmapFrame.Create(RTB_Image));
+            //Exporting 
+            SaveFileDialog SFD_Export = new SaveFileDialog();
+            SFD_Export.Filter = "PNG Image + XMLData | *.png";
+            Nullable<bool> ofFileResult = SFD_Export.ShowDialog();
+            //Check we clicked ok.
+            if (ofFileResult == true)
             {
-                MessageBox.Show("Export Failed. Canvas has a Width of 0.", "Export Failure.");
+                //PNG
+                FileStream FS_File = File.Create(SFD_Export.FileName);
+                PNG_Image.Save(FS_File);
+                FS_File.Close();
+                //XML
+                String sXML = SFD_Export.FileName.Substring(0, SFD_Export.FileName.Length - System.IO.Path.GetExtension(SFD_Export.FileName).Length);
+                ExportXML(sXML, SFD_Export.SafeFileName);
             }
-            if (canvasSpriteSheet.Children.Count == 0)
-            {
-                MessageBox.Show("Export Failed. Canvas has no internal Images.", "Export Failure.");
-            }
-            if (canvasSpriteSheet.ActualHeight == 0 || canvasSpriteSheet.ActualWidth == 0 || canvasSpriteSheet.Children.Count == 0)
-            {
-                return;
-            }
+            canvasSpriteSheet.Background.Opacity = 1d;
+        }
+        private void Menu_XMLUV_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CanvasCheck()) return;
             //Export the Canvas to PNG
             canvasSpriteSheet.Background.Opacity = 0d;
             //Create RenderTarget for the image
@@ -177,7 +192,7 @@ namespace SpriteMapGenerator
                 FS_File.Close();
                 //XML
                 String sXML = SFD_Export.FileName.Substring(0, SFD_Export.FileName.Length - System.IO.Path.GetExtension(SFD_Export.FileName).Length);
-                ExportXML(sXML, SFD_Export.SafeFileName);
+                ExportXMLUV(sXML, SFD_Export.SafeFileName);
             }
             canvasSpriteSheet.Background.Opacity = 1d;
         }
@@ -357,6 +372,27 @@ namespace SpriteMapGenerator
             return power;
         }
         //BoxChecking
+        private bool CanvasCheck()
+        {
+            //Check if we can export
+            if (canvasSpriteSheet.ActualHeight == 0)
+            {
+                MessageBox.Show("Export Failed. Canvas has a Height of 0.", "Export Failure.");
+            }
+            if (canvasSpriteSheet.ActualWidth == 0)
+            {
+                MessageBox.Show("Export Failed. Canvas has a Width of 0.", "Export Failure.");
+            }
+            if (canvasSpriteSheet.Children.Count == 0)
+            {
+                MessageBox.Show("Export Failed. Canvas has no internal Images.", "Export Failure.");
+            }
+            if (canvasSpriteSheet.ActualHeight == 0 || canvasSpriteSheet.ActualWidth == 0 || canvasSpriteSheet.Children.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
         private bool CheckInside(Point Value, Image img)
         {
             if (Value.X < (double)img.GetValue(Canvas.LeftProperty) + img.Width &&
@@ -375,12 +411,13 @@ namespace SpriteMapGenerator
             XmlWriterSettings XWSettings = new XmlWriterSettings();
             XWSettings.Indent = true;
             //start the writer
-            using (XmlWriter XMLWriter = XmlWriter.Create(Path+".xml", XWSettings))
+            using (XmlWriter XMLWriter = XmlWriter.Create(Path + ".xml", XWSettings))
             {
                 //Start the XML writer
                 XMLWriter.WriteStartDocument();
                 XMLWriter.WriteStartElement("SpriteMap");
                 XMLWriter.WriteStartElement("Images");
+                XMLWriter.WriteAttributeString("Type", "Pos");
                 XMLWriter.WriteAttributeString("count", canvasSpriteSheet.Children.Count.ToString());
                 //Export Canvas Properties
                 SafeName = SafeName.Substring(0, SafeName.Length - System.IO.Path.GetExtension(SafeName).Length);
@@ -401,6 +438,47 @@ namespace SpriteMapGenerator
                     XMLWriter.WriteEndElement();
                     iID += 1;
 
+                }
+                //Close the document
+                XMLWriter.WriteEndDocument();
+            }
+        }
+        private void ExportXMLUV(String Path, String SafeName)
+        {
+            //Start the settings and set Indent to true for cleaner looking code
+            XmlWriterSettings XWSettings = new XmlWriterSettings();
+            XWSettings.Indent = true;
+            //start the writer
+            using (XmlWriter XMLWriter = XmlWriter.Create(Path+".xml", XWSettings))
+            {
+                //Start the XML writer
+                XMLWriter.WriteStartDocument();
+                XMLWriter.WriteStartElement("SpriteMap");
+                XMLWriter.WriteStartElement("Images");
+                XMLWriter.WriteAttributeString("Type", "UV");
+                XMLWriter.WriteAttributeString("count", canvasSpriteSheet.Children.Count.ToString());
+                //Export Canvas Properties
+                SafeName = SafeName.Substring(0, SafeName.Length - System.IO.Path.GetExtension(SafeName).Length);
+                XMLWriter.WriteAttributeString("Image", SafeName + ".png");
+
+                int width = (int)canvasSpriteSheet.ActualWidth;
+                int height = (int)canvasSpriteSheet.ActualHeight;
+
+                XMLWriter.WriteAttributeString("Width", width.ToString());
+                XMLWriter.WriteAttributeString("Height", height.ToString());
+                //For each image, export its relevant content
+                int iID = 0;
+                foreach (Image Img in canvasSpriteSheet.Children)
+                {
+                    XMLWriter.WriteStartElement("Image");
+                    XMLWriter.WriteAttributeString("id", iID.ToString());
+                    XMLWriter.WriteAttributeString("Name", Img.Source.ToString().Substring(Img.Source.ToString().LastIndexOf("/") + 1, Img.Source.ToString().Length - Img.Source.ToString().LastIndexOf("/") - System.IO.Path.GetExtension(Img.Source.ToString()).Length - 1));
+                    XMLWriter.WriteAttributeString("uMin", ( Convert.ToSingle(Img.GetValue(Canvas.LeftProperty))                    / width ).ToString());
+                    XMLWriter.WriteAttributeString("uMax", ((Convert.ToSingle(Img.GetValue(Canvas.LeftProperty)) + (int)Img.Width)  / width ).ToString());
+                    XMLWriter.WriteAttributeString("vMin", ( Convert.ToSingle(Img.GetValue(Canvas.TopProperty ))                    / height).ToString());
+                    XMLWriter.WriteAttributeString("vMax", ((Convert.ToSingle(Img.GetValue(Canvas.TopProperty )) + (int)Img.Height) / height).ToString());
+                    XMLWriter.WriteEndElement();
+                    iID += 1;
                 }
                 //Close the document
                 XMLWriter.WriteEndDocument();

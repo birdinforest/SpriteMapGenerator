@@ -20,7 +20,8 @@
                 <MenuItem Header="Exit" Click="Menu_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Export">
-                <MenuItem Header="XML"   Click="Menu_XML_Click"/>
+                <MenuItem Header="XML Pos"   Click="Menu_XMLPos_Click"/>
+                <MenuItem Header="XML UV"   Click="Menu_XMLUV_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" />
