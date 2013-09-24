@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Windows.Markup;
+using System.Xml;
 
 namespace SpriteMapGenerator
 {
@@ -94,7 +95,6 @@ namespace SpriteMapGenerator
                     bmimg.EndInit();
                     //Generate the Image
                     Image img = new Image();
-
                     img.BeginInit();
                     img.Source = bmimg;
                     img.Width = bmimg.PixelWidth;
@@ -161,8 +161,7 @@ namespace SpriteMapGenerator
                 FS_File.Close();
                 //XML
                 String sXML = SFD_Export.FileName.Substring(0, SFD_Export.FileName.Length - System.IO.Path.GetExtension(SFD_Export.FileName).Length);
-                sXML += ".xml";
-                ExportXML(sXML);
+                ExportXML(sXML, SFD_Export.SafeFileName);
             }
             canvasSpriteSheet.Background.Opacity = 1d;
         }
@@ -354,15 +353,38 @@ namespace SpriteMapGenerator
                 return false;
             }
         }
-        private void ExportXML(String Path)
+        private void ExportXML(String Path, String SafeName)
         {
-            //This exports the canvas.. Needs to be fixed up 
-            string sXML = XamlWriter.Save(canvasSpriteSheet);
-            FileStream FS_Export = File.Create(Path);
-            StreamWriter SW_Export = new StreamWriter(FS_Export);
-            SW_Export.Write(sXML);
-            SW_Export.Close();
-            FS_Export.Close();
+            //Start the settings and set Indent to true for cleaner looking code
+            XmlWriterSettings XWSettings = new XmlWriterSettings();
+            XWSettings.Indent = true;
+            //start the writer
+            using (XmlWriter XMLWriter = XmlWriter.Create(Path+".xml", XWSettings))
+            {
+                //Start the XML writer
+                XMLWriter.WriteStartDocument();
+                XMLWriter.WriteStartElement("SpriteMap");
+                XMLWriter.WriteStartElement("Images");
+                XMLWriter.WriteAttributeString("count", canvasSpriteSheet.Children.Count.ToString());
+                //Export Canvas Properties
+                SafeName = SafeName.Substring(0, SafeName.Length - System.IO.Path.GetExtension(SafeName).Length);
+                XMLWriter.WriteAttributeString("Image", SafeName + ".png");
+                XMLWriter.WriteAttributeString("Width", canvasSpriteSheet.ActualWidth.ToString());
+                XMLWriter.WriteAttributeString("Height", canvasSpriteSheet.ActualHeight.ToString());
+                //For each image, export its relevant content
+                foreach (Image Img in canvasSpriteSheet.Children)
+                {
+                    XMLWriter.WriteStartElement("Image");
+                    XMLWriter.WriteAttributeString("x", Img.GetValue(Canvas.LeftProperty).ToString());
+                    XMLWriter.WriteAttributeString("y", Img.GetValue(Canvas.TopProperty).ToString());
+                    XMLWriter.WriteAttributeString("width", Img.Width.ToString());
+                    XMLWriter.WriteAttributeString("height", Img.Height.ToString());
+                    XMLWriter.WriteEndElement();
+
+                }
+                //Close the document
+                XMLWriter.WriteEndDocument();
+            }
         }
     }
 }
