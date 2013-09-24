@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
-using System.Xml.Linq;
+using System.Windows.Markup;
 
 namespace SpriteMapGenerator
 {
@@ -160,7 +160,7 @@ namespace SpriteMapGenerator
                 PNG_Image.Save(FS_File);
                 FS_File.Close();
                 //XML
-                String sXML = SFD_Export.SafeFileName.Substring(0, SFD_Export.SafeFileName.Length - System.IO.Path.GetExtension(SFD_Export.FileName).Length);
+                String sXML = SFD_Export.FileName.Substring(0, SFD_Export.FileName.Length - System.IO.Path.GetExtension(SFD_Export.FileName).Length);
                 sXML += ".xml";
                 ExportXML(sXML);
             }
@@ -356,7 +356,13 @@ namespace SpriteMapGenerator
         }
         private void ExportXML(String Path)
         {
-
+            //This exports the canvas.. Needs to be fixed up 
+            string sXML = XamlWriter.Save(canvasSpriteSheet);
+            FileStream FS_Export = File.Create(Path);
+            StreamWriter SW_Export = new StreamWriter(FS_Export);
+            SW_Export.Write(sXML);
+            SW_Export.Close();
+            FS_Export.Close();
         }
     }
 }
