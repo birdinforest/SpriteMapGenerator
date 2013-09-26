@@ -53,6 +53,7 @@ namespace SpriteMapGenerator
         private Point MousePoint;
         private Image CurrentImage = null;
         private Window SettingsWindowV = null;
+        private Window AboutWindowV = null;
         private Point Snap;
         //Main
         public MainWindow()
@@ -68,6 +69,10 @@ namespace SpriteMapGenerator
             if (SettingsWindowV != null)
             {
                 SettingsWindowV.Close();
+            }
+            if (AboutWindowV != null)
+            {
+                AboutWindowV.Close();
             }
         }
         //Menu
@@ -120,9 +125,16 @@ namespace SpriteMapGenerator
         }
         private void Menu_New_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want wipe everything?", "Wipe Canvas", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you want wipe everything?", "Wipe Everything", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                ClearAll();
+                Clear(true);
+            }
+        }
+        private void Menu_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want wipe the canvas?", "Wipe Canvas", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                Clear(false);
             }
         }
         private void Menu_Exit_Click(object sender, RoutedEventArgs e)
@@ -131,6 +143,11 @@ namespace SpriteMapGenerator
             {
                 Application.Current.Shutdown();
             }
+        }
+        private void Menu_About_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindowV = new About();
+            AboutWindowV.Show();
         }
         private void Menu_Settings_Click(object sender, RoutedEventArgs e)
         {
@@ -294,15 +311,18 @@ namespace SpriteMapGenerator
         {
             //This will replace CheckSize
         }
-        private void ClearAll()
+        private void Clear(bool clear)
         {
-            canvasSpriteSheet.Children.Clear();
+            if (clear)
+            {
+                LV_Sprites.Items.Clear();
+            }
             LV_Layers.Items.Clear();
-            LV_Sprites.Items.Clear();
             canvasSpriteSheet.Width = 0.0;
             Label_ImageWidth.Content = canvasSpriteSheet.Width;
             canvasSpriteSheet.Height = 0.0;
             Label_ImageHeight.Content = canvasSpriteSheet.Height;
+            canvasSpriteSheet.Children.Clear();
             dXOff = 0.0;
             dYOff = 0.0;
         }
