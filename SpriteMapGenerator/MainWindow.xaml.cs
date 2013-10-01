@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Windows.Markup;
 using System.Xml;
+using System.IO.Compression;
+using Ionic.Zip;
 
 namespace SpriteMapGenerator
 {
@@ -77,6 +79,57 @@ namespace SpriteMapGenerator
         }
         //Menu
         private void Menu_Load_Click(object sender, RoutedEventArgs e)
+        {
+            //Open Files
+            OpenFileDialog ofFile = new OpenFileDialog();
+            //Filter the filetypes, Turn on multiselect and Keep the final Directory
+            ofFile.Filter = "Project File|*.smf;";
+            ofFile.Multiselect = false;
+            ofFile.RestoreDirectory = true;
+            //setup the temp int for looping and error checking bool
+            Nullable<bool> ofFileResult = ofFile.ShowDialog();
+            //Check we clicked ok.
+            if (ofFileResult == true)
+            {
+                using (ZipFile zip = ZipFile.Read(ofFile.FileName))
+                {
+                    zip.Password = "Rangatangaalukemonaghan26071992";
+                    foreach (ZipEntry ZEFile in zip)
+                    {
+                        Console.WriteLine(ZEFile.FileName);
+                        //ZEFile.Extract(OutputStream);
+                    }
+                }
+            }
+        }
+        private void Menu_Save_Click(object sender, RoutedEventArgs e)
+        {
+            //Open Files
+            SaveFileDialog SFDFile = new SaveFileDialog();
+            //Filter the filetypes, Turn on multiselect and Keep the final Directory
+            SFDFile.Filter = "Project File|*.smf;";
+            SFDFile.RestoreDirectory = true;
+            //setup the temp int for looping and error checking bool
+            Nullable<bool> ofFileResult = SFDFile.ShowDialog();
+            //Check we clicked ok.
+            if (ofFileResult == true)
+            {
+                using (ZipFile SaveZip = new ZipFile())
+                {
+                    //Setup the zip
+                    SaveZip.CompressionLevel = Ionic.Zlib.CompressionLevel.None;
+                    SaveZip.Comment = "You opened this with a archiver program! How dare you know my secrets, Bet you cant get the password though :D";
+                    SaveZip.Password = "rangatangaa<->lukemonaghan<->26071992"; // long password, but k cuz hrdr 2 crk :D
+
+                    //add All loaded images into project
+                    SaveZip.AddSelectedFiles("*.png", "C:\\Users\\Luke\\Desktop\\icons", "images");
+                    //generate the XML and add it to the file
+                    SaveZip.AddFile("C:\\Users\\Luke\\Desktop\\Export\\Positional.xml", "");
+                    SaveZip.Save(SFDFile.FileName);
+                }
+            }
+        }
+        private void Menu_Import_Click(object sender, RoutedEventArgs e)
         {
             //Open Files
             OpenFileDialog ofFile = new OpenFileDialog();

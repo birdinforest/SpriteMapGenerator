@@ -14,6 +14,9 @@
         <Menu Height="23" Name="menu1" VerticalAlignment="Top" Margin="0,0,0,0" IsEnabled="True">
             <MenuItem Header="File">
                 <MenuItem Header="Load" Click="Menu_Load_Click"/>
+                <MenuItem Header="Save" Click="Menu_Save_Click"/>
+                <Separator />
+                <MenuItem Header="Import Image" Click="Menu_Import_Click"/>
                 <MenuItem Header="New" Click="Menu_New_Click"/>
                 <MenuItem Header="Clear" Click="Menu_Clear_Click"/>
                 <Separator />
