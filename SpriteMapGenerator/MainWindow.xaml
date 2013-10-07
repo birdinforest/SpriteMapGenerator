@@ -6,8 +6,8 @@
         <ListView Height="652" HorizontalAlignment="Left" VerticalAlignment="Center" Name="LV_Sprites" Width="200" ItemsSource="{Binding}" AllowDrop="True" Margin="0,29,0,0" SelectionMode="Single" MouseLeftButtonUp="LV_Sprites_MouseLeftButtonUp" Background="White">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="File" DisplayMemberBinding="{Binding Path=sName}" Width="100"/>
-                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=sPath}" Width="100"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=sName}" Width="100"/>
+                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path=sPath}" Width="75"/>
                 </GridView>
             </ListView.View>
         </ListView>
