@@ -272,7 +272,7 @@ namespace SpriteMapGenerator
             ListViewItem vClicked = null;
             if (LV_Sprites.Items.Count > 0)
             {
-                vClicked = LV_Sprites.SelectedItem as ListViewItem;
+                vClicked = LV_Sprites.SelectedItem as ListViewItem;                
             }
             //TODO
             if (vClicked != null)
